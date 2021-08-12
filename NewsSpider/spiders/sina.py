@@ -26,7 +26,7 @@ class SinaSpider(scrapy.Spider):
         super(SinaSpider, self).__init__()
         self.all = False
         self.category = '2512'
-        self.time = '08-12'
+        self.time = None
         self.cate_id = {
             'sport': '2512',
             'ent': '2513',
@@ -56,12 +56,12 @@ class SinaSpider(scrapy.Spider):
         for cate in self.cate_id.values():
             for i in range(1, 51):
                 url = self.base_url.format(cate, i)
-                yield scrapy.Request(url=url, meta={'cate': cate, 'page': i}, callback=self.parse, dont_filter=True)
+                yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
 
     def start_requests_by_cate(self):
         for i in range(1, 51):
             url = self.base_url.format(self.category, i)
-            yield scrapy.Request(url=url, meta={'cate': self.category, 'page': i}, callback=self.parse, dont_filter=True)
+            yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
 
     def parse(self, response, **kwargs):
         if response.status is not 200:
@@ -82,7 +82,7 @@ class SinaSpider(scrapy.Spider):
             news_item['news_type'] = self.id_cate[str(lid)]
             news_item['news_link'] = data['url']
 
-            if self.time not in news_item['news_time']:
+            if self.time and self.time not in news_item['news_time']:
                 continue
             yield scrapy.Request(url=data['url'], callback=self.parse_news, meta={'item': news_item}, dont_filter=True)
 
