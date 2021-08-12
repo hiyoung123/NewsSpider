@@ -1,17 +1,10 @@
 #!usr/bin/env python
 # -*- coding:utf-8 -*-
 
-import time
 import json
 import scrapy
 from ..items import NewsItem
-
-
-def parse_time(ctime):
-    ctime = int(ctime)
-    time_struct = time.strptime(time.ctime(ctime), '%a %b %d %H:%M:%S %Y')
-    time_final = time.strftime("%Y-%m-%d %H:%M", time_struct)
-    return time_final
+from ..utils.common import parse_time
 
 
 class SinaSpider(scrapy.Spider):
@@ -27,14 +20,14 @@ class SinaSpider(scrapy.Spider):
     """
 
     name = 'sina'
-    base_url = 'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid={}&k=&num=50&page=1'
+    base_url = 'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid={}&k=&num=50&page={}'
 
     def __init__(self):
         super(SinaSpider, self).__init__()
         self.all = False
         self.category = '2512'
-        self.time = None
-        self.cate_kv = {
+        self.time = '08-12'
+        self.cate_id = {
             'sport': '2512',
             'ent': '2513',
             'war': '2514',
@@ -42,6 +35,15 @@ class SinaSpider(scrapy.Spider):
             'money': '2516',
             'stock': '2517',
             'usstock': '2518',
+        }
+        self.id_cate = {
+            '2512': 'sport',
+            '2513': 'ent',
+            '2514': 'war',
+            '2515': 'tech',
+            '2516': 'money',
+            '2517': 'stock',
+            '2518': 'usstock',
         }
 
     def start_requests(self):
@@ -51,7 +53,7 @@ class SinaSpider(scrapy.Spider):
             return self.start_requests_by_cate()
 
     def start_requests_all(self):
-        for cate in self.cate_kv.values():
+        for cate in self.cate_id.values():
             for i in range(1, 51):
                 url = self.base_url.format(cate, i)
                 yield scrapy.Request(url=url, meta={'cate': cate, 'page': i}, callback=self.parse, dont_filter=True)
@@ -72,15 +74,17 @@ class SinaSpider(scrapy.Spider):
             if 'video' in data['url'] or 'k.sina' in data['url']:
                 continue
             news_item = NewsItem()
-            news_item['news_id'] = 0
+            # news_item['news_id'] = 0
             news_item['news_title'] = data['title']
-            news_item['news_content'] = None
             news_item['news_time'] = parse_time(data['ctime'])
             news_item['news_site'] = 'Sina'
-            news_item['news_comments'] = 0
-            news_item['news_type'] = lid
+            news_item['news_comments'] = data.get('comment_total', 0)
+            news_item['news_type'] = self.id_cate[str(lid)]
             news_item['news_link'] = data['url']
-            yield scrapy.Request(url=data['url'], callback=self.parse_news, meta={'item': news_item})
+
+            if self.time not in news_item['news_time']:
+                continue
+            yield scrapy.Request(url=data['url'], callback=self.parse_news, meta={'item': news_item}, dont_filter=True)
 
     def parse_news(self, response):
         news_item = response.meta.get('item')
