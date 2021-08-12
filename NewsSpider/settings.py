@@ -13,7 +13,6 @@ CONCURRENT_REQUESTS = 16
 DOWNLOAD_DELAY = 2
 
 DOWNLOADER_MIDDLEWARES = {
-    'middlewares.SeleniumMiddleware': 101,
 }
 
 ITEM_PIPELINES = {
