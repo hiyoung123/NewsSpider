@@ -25,6 +25,7 @@ class NewsCSVPipeline(object):
                 self.exporter.export_item(item)
                 self.filter.insert(item['news_link'])
                 self.count += 1
+                print('已经爬取 {}，当前为 {}'.format(self.count, item['news_link']))
             else:
                 print('{} 已经存在'.format(item['news_link']))
         return item

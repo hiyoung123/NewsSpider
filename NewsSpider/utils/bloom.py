@@ -1,9 +1,6 @@
 #!usr/bin/env python
 #-*- coding:utf-8 -*-
 
-#!usr/bin/env python
-# -*- coding:utf-8 -*-
-
 import redis
 from hashlib import md5
 
@@ -21,15 +18,15 @@ class SimpleHash(object):
 
 
 class BloomFilter(object):
-    def __init__(self, host='localhost', port=6379, db=1, blockNum=1, key='young'):
+    def __init__(self, host='localhost', port=6379, db=1, block_num=1, key='NewsSpider'):
         self.server = redis.Redis(host=host, port=port, db=db)
         self.bit_size = 1 << 31
         self.seeds = [5, 7, 11, 13, 31, 37, 61]
         self.key = key
-        self.blockNum = blockNum
-        self.hashfunc = []
+        self.block_num = block_num
+        self.hash_func = []
         for seed in self.seeds:
-            self.hashfunc.append(SimpleHash(self.bit_size, seed))
+            self.hash_func.append(SimpleHash(self.bit_size, seed))
 
     def contains(self, str_input):
         if not str_input:
@@ -38,8 +35,8 @@ class BloomFilter(object):
         m5.update(str_input.encode('utf-8'))
         str_input = m5.hexdigest()
         ret = True
-        name = self.key + str(int(str_input[0:2], 16) % self.blockNum)
-        for f in self.hashfunc:
+        name = self.key + '_' + str(int(str_input[0:2], 16) % self.block_num)
+        for f in self.hash_func:
             loc = f.hash(str_input)
             ret = ret & self.server.getbit(name, loc)
         return ret
@@ -48,8 +45,8 @@ class BloomFilter(object):
         m5 = md5()
         m5.update(str_input.encode('utf-8'))
         str_input = m5.hexdigest()
-        name = self.key + str(int(str_input[0:2], 16) % self.blockNum)
-        for f in self.hashfunc:
+        name = self.key + '_' + str(int(str_input[0:2], 16) % self.block_num)
+        for f in self.hash_func:
             loc = f.hash(str_input)
             self.server.setbit(name, loc, 1)
 
