@@ -16,18 +16,17 @@ class NewsCSVPipeline(object):
         self.file = open('NewsSpider/data/' + settings['EXPORTER_FILE'], 'wb')
         self.exporter = CsvItemExporter(self.file, include_headers_line=True, encoding='utf-8')
         self.exporter.start_exporting()
-        # self.filter = BloomFilter()
+        self.filter = BloomFilter()
         self.count = 0
-        self.saved_list = set()
 
     def process_item(self, item, spider):
         if isinstance(item, NewsItem):
-            # if self.filter.contains(item['news_link']):
-            if item['news_link'] not in self.saved_list:
+            if not self.filter.contains(item['news_link']):
                 self.exporter.export_item(item)
-                self.saved_list.add(item['news_link'])
-                # self.filter.insert(item['news_link'])
+                self.filter.insert(item['news_link'])
                 self.count += 1
+            else:
+                print('{} 已经存在'.format(item['news_link']))
         return item
 
     def close_spider(self, spider):
