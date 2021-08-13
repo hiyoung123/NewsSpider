@@ -10,6 +10,8 @@ from ..utils.common import parse_time
 class SinaSpider(scrapy.Spider):
 
     """
+        'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2510&k=&num=50&page=1',  # 国内
+        'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2511&k=&num=50&page=1',  # 国际
         'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2512&k=&num=50&page=1',  # 体育
         'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2513&k=&num=50&page=1',  # 娱乐
         'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2514&k=&num=50&page=1',  # 军事
@@ -17,6 +19,7 @@ class SinaSpider(scrapy.Spider):
         'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2516&k=&num=50&page=1',  # 财经
         'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2517&k=&num=50&page=1',  # 股票
         'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2518&k=&num=50&page=1',  # 美股
+        'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid=2669&k=&num=50&page=1',  # 社会
     """
 
     name = 'sina'
@@ -24,10 +27,11 @@ class SinaSpider(scrapy.Spider):
 
     def __init__(self):
         super(SinaSpider, self).__init__()
-        self.all = False
         self.category = '2512'
         self.time = None
         self.cate_id = {
+            'china': '2510',
+            'world': '2511',
             'sport': '2512',
             'ent': '2513',
             'war': '2514',
@@ -35,8 +39,11 @@ class SinaSpider(scrapy.Spider):
             'money': '2516',
             'stock': '2517',
             'usstock': '2518',
+            'society': '2669',
         }
         self.id_cate = {
+            '2510': 'china',
+            '2511': 'world',
             '2512': 'sport',
             '2513': 'ent',
             '2514': 'war',
@@ -44,24 +51,16 @@ class SinaSpider(scrapy.Spider):
             '2516': 'money',
             '2517': 'stock',
             '2518': 'usstock',
+            '2669': 'society',
         }
 
     def start_requests(self):
-        if self.all:
-            return self.start_requests_all()
-        else:
-            return self.start_requests_by_cate()
-
-    def start_requests_all(self):
         for cate in self.cate_id.values():
+            if self.category and self.category not in cate:
+                continue
             for i in range(1, 51):
                 url = self.base_url.format(cate, i)
                 yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
-
-    def start_requests_by_cate(self):
-        for i in range(1, 51):
-            url = self.base_url.format(self.category, i)
-            yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
 
     def parse(self, response, **kwargs):
         if response.status is not 200:
