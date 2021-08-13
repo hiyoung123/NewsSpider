@@ -9,16 +9,6 @@ from ..utils.common import parse_time
 
 class SohuSpider(scrapy.Spider):
 
-    """
-        'http://v2.sohu.com/public-api/feed?scene=CATEGORY&sceneId=1460&page=1&size=20',    # 时政
-        'http://v2.sohu.com/public-api/feed?scene=CATEGORY&sceneId=1461&page=1&size=20',    # 国际
-        'http://v2.sohu.com/public-api/feed?scene=CATEGORY&sceneId=1463&page=1&size=20',    # 财经
-        'http://v2.sohu.com/integration-api/mix/region/82?size=25&adapter=pc&page=1',       # 真财经
-        'http://v2.sohu.com/integration-api/mix/region/5676?size=25&adapter=pc&page=1',     # 科技
-        'http://v2.sohu.com/integration-api/mix/region/131?size=25&adapter=pc&page=1',      # 娱乐
-        'http://v2.sohu.com/integration-api/mix/region/4357?size=25&adapter=pc&page=1',     # 体育
-
-    """
     name = 'sohu'
     base_url = 'https://finance.sohu.com.cn/'
 
