@@ -19,3 +19,5 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
     'NewsSpider.pipelines.NewsCSVPipeline': 300,
 }
+
+EXPORTER_FILE = "news.csv"
