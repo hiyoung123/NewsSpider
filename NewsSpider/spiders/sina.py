@@ -27,40 +27,39 @@ class SinaSpider(scrapy.Spider):
 
     def __init__(self):
         super(SinaSpider, self).__init__()
-        self.category = '2512'
+        self.category = '财经'
         self.time = None
         self.cate_id = {
-            'china': '2510',
-            'world': '2511',
-            'sport': '2512',
-            'ent': '2513',
-            'war': '2514',
-            'tech': '2515',
-            'money': '2516',
-            'stock': '2517',
-            'usstock': '2518',
-            'society': '2669',
+            '国内': '2510',
+            '国际': '2511',
+            '体育': '2512',
+            '娱乐': '2513',
+            '军事': '2514',
+            '科技': '2515',
+            '财经': '2516',
+            '股票': '2517',
+            '美股': '2518',
+            '社会': '2669',
         }
         self.id_cate = {
-            '2510': 'china',
-            '2511': 'world',
-            '2512': 'sport',
-            '2513': 'ent',
-            '2514': 'war',
-            '2515': 'tech',
-            '2516': 'money',
-            '2517': 'stock',
-            '2518': 'usstock',
-            '2669': 'society',
+            '2510': '国内',
+            '2511': '国际',
+            '2512': '体育',
+            '2513': '娱乐',
+            '2514': '军事',
+            '2515': '科技',
+            '2516': '财经',
+            '2517': '股票',
+            '2518': '美股',
+            '2669': '社会',
         }
 
     def start_requests(self):
-        for cate in self.cate_id.values():
+        for url, cate in self.id_cate.items():
             if self.category and self.category not in cate:
                 continue
             for i in range(1, 51):
-                url = self.base_url.format(cate, i)
-                yield scrapy.Request(url=url, callback=self.parse, dont_filter=True)
+                yield scrapy.Request(url=self.base_url.format(url, i), callback=self.parse, dont_filter=True)
 
     def parse(self, response, **kwargs):
         if response.status is not 200:

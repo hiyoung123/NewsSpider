@@ -46,6 +46,9 @@ class SohuSpider(scrapy.Spider):
                 yield scrapy.Request(url=url.format(i), meta={'cate': cate}, callback=self.parse, dont_filter=True)
 
     def parse(self, response, **kwargs):
+        if response.status is not 200:
+            return
+
         if 'public-api' in response.url:  # 是新闻类型的API
             data_list = json.loads(response.text)
         elif 'integration-api' in response.url:
