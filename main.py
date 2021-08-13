@@ -3,11 +3,29 @@
 
 import os
 import sys
+import argparse
 from scrapy.cmdline import execute
 
-if __name__ == '__main__':
 
+def main(args):
     sys.path.append(os.path.abspath(__file__))
-    # execute('scrapy crawl sina -a category=财经 -a time=08-12'.split())
-    # execute('scrapy crawl netease -a category=财经 -a time=08-12'.split())
-    execute('scrapy crawl sohu -a category=财经 -a time=08-12'.split())
+    if args.category and args.time:
+        execute('scrapy crawl {} -a category={} -a time={}'.format(args.spider, args.category, args.time).split())
+    elif args.category:
+        execute('scrapy crawl {} -a category={}'.format(args.spider, args.category).split())
+    elif args.time:
+        execute('scrapy crawl {} -a time={}'.format(args.spider, args.time).split())
+    else:
+        execute('scrapy crawl {}'.format(args.spider).split())
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', dest='spider', required=True, choices=['sohu', 'sina', 'netease'], help='spider name, sohu|sina|netease')
+    parser.add_argument('-c', dest='category', required=False, default=None, help='filter crawl news category.')
+    parser.add_argument('-t', dest='time', required=False, default=None, help='filter crawl news time, Example mm-dd')
+    # parser.add_argument('--spider', required=True, choices=['sohu', 'sina', 'netease'], help='spider name, sohu|sina|netease')
+    # parser.add_argument('--category', required=False, default=None, help='filter crawl news category.')
+    # parser.add_argument('--time', required=False, default=None, help='filter crawl news time, Example mm-dd')
+    args = parser.parse_args()
+    main(args)
