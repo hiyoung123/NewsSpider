@@ -1,6 +1,10 @@
 #!usr/bin/env python
 # -*- coding:utf-8 -*-
 
+
+import datetime
+
+
 BOT_NAME = 'NewsSpider'
 
 SPIDER_MODULES = ['NewsSpider.spiders']
@@ -21,3 +25,9 @@ ITEM_PIPELINES = {
 }
 
 EXPORTER_FILE = "news.csv"
+
+
+today = datetime.datetime.now()
+log_file = 'NewsSpider/log/scrapy_{}_{}_{}.log'.format(today.year, today.month, today.day)
+LOG_LEVEL = 'DEBUG'
+LOG_FILE = log_file
