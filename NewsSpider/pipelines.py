@@ -7,7 +7,7 @@ from NewsSpider.items import NewsItem
 
 class NewsCSVPipeline(object):
     def __init__(self):
-        self.file = open('data/news.csv', 'wb')
+        self.file = open('NewsSpider/data/news.csv', 'wb')
         self.exporter = CsvItemExporter(self.file, include_headers_line=True, encoding='utf-8')
         self.exporter.start_exporting()
         self.saved_list = set()

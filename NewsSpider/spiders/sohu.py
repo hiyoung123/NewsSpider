@@ -23,10 +23,10 @@ class SohuSpider(scrapy.Spider):
         'http://v2.sohu.com/integration-api/mix/region/4302?size=25&adapter=pc&page={}': '体育',  # 综合体育
     }
 
-    def __init__(self):
-        super(SohuSpider, self).__init__()
-        self.category = '财经'
-        self.time = '08-12'
+    def __init__(self, category=None, time=None, *args, **kwargs):
+        super(SohuSpider, self).__init__(*args, **kwargs)
+        self.category = category
+        self.time = time
 
     def start_requests(self):
         for url, cate in self.cate_kv.items():

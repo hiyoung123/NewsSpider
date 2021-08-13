@@ -13,9 +13,9 @@ CONCURRENT_REQUESTS = 16
 # DOWNLOAD_DELAY = 1
 
 DOWNLOADER_MIDDLEWARES = {
-    'middlewares.MyUserAgentMiddleware': 101,
+    'NewsSpider.middlewares.MyUserAgentMiddleware': 101,
 }
 
 ITEM_PIPELINES = {
-    'pipelines.NewsCSVPipeline': 300,
+    'NewsSpider.pipelines.NewsCSVPipeline': 300,
 }

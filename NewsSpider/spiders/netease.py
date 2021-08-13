@@ -52,10 +52,10 @@ class NeteaseSpider(scrapy.Spider):
                   'https://money.163.com/special/00259BVP/news_flow_car.js': '汽车',  # 汽车
     }
 
-    def __init__(self):
-        super(NeteaseSpider, self).__init__()
-        self.category = None
-        self.time = None
+    def __init__(self, category=None, time=None, *args, **kwargs):
+        super(NeteaseSpider, self).__init__(*args, **kwargs)
+        self.category = category
+        self.time = time
 
     def start_requests(self):
         for url, cate in self.cate_kv.items():

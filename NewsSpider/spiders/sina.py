@@ -25,10 +25,11 @@ class SinaSpider(scrapy.Spider):
     name = 'sina'
     base_url = 'https://feed.mix.sina.com.cn/api/roll/get?pageid=153&lid={}&k=&num=50&page={}'
 
-    def __init__(self):
-        super(SinaSpider, self).__init__()
-        self.category = '财经'
-        self.time = None
+    def __init__(self, category=None, time=None, *args, **kwargs):
+        super(SinaSpider, self).__init__(*args, **kwargs)
+        self.category = category
+        self.time = time
+
         self.cate_id = {
             '国内': '2510',
             '国际': '2511',
