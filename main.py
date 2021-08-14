@@ -25,8 +25,5 @@ if __name__ == '__main__':
     parser.add_argument('-c', dest='category', required=False, default=None, help='filter crawl news category.')
     parser.add_argument('-t', dest='time', required=False, default=None, help='filter crawl news time, Example mm-dd')
     parser.add_argument('-f', dest='file', required=False, default='news.csv', help='the file name of save data, default=news.csv')
-    # parser.add_argument('--spider', required=True, choices=['sohu', 'sina', 'netease'], help='spider name, sohu|sina|netease')
-    # parser.add_argument('--category', required=False, default=None, help='filter crawl news category.')
-    # parser.add_argument('--time', required=False, default=None, help='filter crawl news time, Example mm-dd')
     args = parser.parse_args()
     main(args)
